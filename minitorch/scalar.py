@@ -166,7 +166,7 @@ class Scalar:
         return [
             (var, val)
             for var, val in zip(h.inputs, h.last_fn._backward(h.ctx, d_output))
-            if not var.is_constant()
+            # if not var.is_constant()
         ]
 
     def backward(self, d_output: Optional[float] = None) -> None:

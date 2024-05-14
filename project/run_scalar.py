@@ -44,12 +44,15 @@ class Linear(minitorch.Module):
 
     def forward(self, inputs):
         out = []
+        # print("INPUTS: ", inputs)
+        # print("PARAMETERS: ", self.weights, self.bias)
         for j in range(len(self.bias)):
             # self.weights[i][j] is Parameter, self.weights[i][j].value is Scalar
             out.append(
                 sum([inputs[i] * self.weights[i][j].value for i in range(len(inputs))])
                 + self.bias[j].value
             )
+        # print("OUT: ", out)
 
         return tuple(out)
 
@@ -111,7 +114,7 @@ class ScalarTrain:
 
 if __name__ == "__main__":
     PTS = 50
-    HIDDEN = 2
+    HIDDEN = 10
     RATE = 0.5
-    data = minitorch.datasets["Simple"](PTS)
+    data = minitorch.datasets["Diag"](PTS)
     ScalarTrain(HIDDEN).train(data, RATE)

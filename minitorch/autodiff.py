@@ -74,9 +74,7 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
 
     def _dfs(scalar: Variable) -> None:
         visited.append(scalar.unique_id)
-        if (
-            not scalar.is_constant()
-        ):  # assert scalar.history is not None, so scalar.parents is not None, aka pruning
+        if not scalar.is_constant():
             for var in scalar.parents:
                 if var.unique_id not in visited:
                     _dfs(var)
@@ -111,7 +109,7 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
             var.accumulate_derivative(intermediate[var.unique_id])
             continue
 
-        if var.is_constant():  # chain_rule() must called on a non-constant Variable
+        if var.is_constant():
             continue
 
         ls = var.chain_rule(intermediate[var.unique_id])

@@ -228,5 +228,6 @@ def test_reduce_forward_all_dims() -> None:
 
 
 if __name__ == "__main__":
-    test_view()
-    print()
+    fn = one_arg[0]
+    name, _, tensor_fn = fn
+    grad_check(tensor_fn, tensor([2, 3]))

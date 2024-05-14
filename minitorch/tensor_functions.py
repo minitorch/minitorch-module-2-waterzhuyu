@@ -117,12 +117,12 @@ class Sigmoid(Function):
     @staticmethod
     def forward(ctx: Context, t1: Tensor) -> Tensor:
         saved_val: Tensor = t1.f.sigmoid_map(t1)
-        ctx.save_for_backward(t1, saved_val)
+        ctx.save_for_backward(saved_val)
         return saved_val
 
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
-        (t1, saved_val) = ctx.saved_values
+        (saved_val, ) = ctx.saved_values
         return grad_output * saved_val * (-saved_val + 1)
 
 
@@ -135,7 +135,7 @@ class ReLU(Function):
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         (t1,) = ctx.saved_values
-        return grad_output.f.relu_back_zip(t1, grad_output)
+        return t1.expand(grad_output.f.relu_back_zip(t1, grad_output))
 
 
 class Log(Function):
@@ -147,7 +147,7 @@ class Log(Function):
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         (t1,) = ctx.saved_values
-        return grad_output.f.log_back_zip(t1, grad_output)
+        return t1.expand(grad_output.f.log_back_zip(t1, grad_output))
 
 
 class Exp(Function):
@@ -160,7 +160,7 @@ class Exp(Function):
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         (saved_res,) = ctx.saved_values
-        return grad_output.f.mul_zip(grad_output, saved_res)
+        return saved_res.expand(grad_output.f.mul_zip(grad_output, saved_res))
 
 
 class Sum(Function):
@@ -229,7 +229,7 @@ class Permute(Function):
                 enumerate([order[i] for i in range(order.size)]), key=lambda a: a[1]
             )
         ]
-        # return grad_output._new(grad_output.permute(*reverse_order)), 0.
+
         return grad_output._new(grad_output._tensor.permute(*reverse_order)), 0.0
 
 
