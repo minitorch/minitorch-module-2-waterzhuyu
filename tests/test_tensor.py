@@ -225,3 +225,9 @@ def test_reduce_forward_all_dims() -> None:
     t_summed_all_expected = tensor([27])
 
     assert_close(t_summed_all[0], t_summed_all_expected[0])
+
+
+if __name__ == "__main__":
+    fn = one_arg[0]
+    name, _, tensor_fn = fn
+    grad_check(tensor_fn, tensor([2, 3]))
